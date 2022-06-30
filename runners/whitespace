@@ -1,4 +1,0 @@
-#!/bin/sh
-
-cd /ATO/context
-wspace /ATO/code < /ATO/input
