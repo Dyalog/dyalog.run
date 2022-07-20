@@ -39,7 +39,7 @@ export default function Preferences() {
   return (
     <>
       <Head>
-        <title>Prefences &ndash; Attempt This Online</title>
+        <title>Prefences &ndash; Run Dyalog APL</title>
       </Head>
       <div className="min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white pt-8 relative flex flex-col">
         <main
@@ -55,7 +55,7 @@ export default function Preferences() {
             </h1>
           </header>
           <p>
-            Attempt This Online stores your preferences locally in your browser, and they are never
+            Run Dyalog APL stores your preferences locally in your browser, and they are never
             shared with anyone.
           </p>
           <fieldset className="mt-3 border border-gray-400 dark:border-gray-700 rounded pt-2 pb-4 px-4">

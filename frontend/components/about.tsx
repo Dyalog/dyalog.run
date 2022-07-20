@@ -13,22 +13,21 @@ export default function About({ enableRedirect }: { enableRedirect: boolean }) {
       if (!greeted) {
         localforage.setItem('ATO_greeted', true);
       }
-      // if already used the site, and not explicitly on /about, send them to the run page
-      if (enableRedirect && greeted) {
-        router.replace('/run');
-      }
+
+      router.replace('/run?1=m70qpTIxJz89PrEgZ8GCpaUlaboWaBSUBgA');
+      
     });
   }, []);
   return (
     <>
       <Head>
-        <title>Attempt This Online</title>
+        <title>Run Dyalog APL</title>
       </Head>
       <div className="min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white pt-8 relative flex flex-col">
         <main className="mb-3 px-4 md:container md:mx-auto grow">
-          <h1 className="mb-3 -mt-3 md:pt-3 text-4xl md:text-center font-bold">Attempt This Online</h1>
+          <h1 className="mb-3 -mt-3 md:pt-3 text-4xl md:text-center font-bold">Run Dyalog APL</h1>
           <p className="my-4 text-justify">
-            Attempt This Online is an online sandbox environment for running code in an ever-growing
+            Run Dyalog APL is an online sandbox environment for running code in an ever-growing
             list of programming languages, both practical and recreational. ATO was originally
             conceived as a replacement for the increasingly out-of-date
             {' '}

@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Legal &ndash; Attempt This Online</title>
+        <title>Legal &ndash; Run Dyalog APL</title>
       </Head>
       <div className="min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white relative flex flex-col">
         <Navbar />

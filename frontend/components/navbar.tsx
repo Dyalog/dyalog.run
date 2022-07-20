@@ -9,7 +9,7 @@ export default function Navbar() {
           <HomeIcon className="w-6 h-6" />
         </a>
       </Link>
-      <h2 className="hidden sm:block font-bold text-xl my-auto">Attempt This Online</h2>
+      <h2 className="hidden sm:block font-bold text-xl my-auto">Run Dyalog APL</h2>
       <Link href="/preferences">
         <a className="p-2 transition hover:bg-gray-300 dark:hover:bg-gray-600 rounded-full focus:ring">
           <AdjustmentsIcon className="w-6 h-6" />

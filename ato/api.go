@@ -38,7 +38,7 @@ func checkArgs(args [][]byte, conn *websocket.Conn) {
 	}
 }
 
-const maxRequestBytes int64 = 1 << 16
+const maxRequestBytes int64 = 1 << 18
 
 func handleWs(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)

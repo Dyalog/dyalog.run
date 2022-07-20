@@ -47,12 +47,7 @@ whoami | grep -xFq root || error you must run this script as root
 # don't use /tmp because it has weird permissions
 mkdir -p /var/cache/ATO
 
-if [ "$ATO_MANUAL_PACKAGE" ]; then
-    tar -xf "$ATO_MANUAL_PACKAGE" -C /var/cache/ATO
-else
-    curl -sSL "https://github.com/attempt-this-online/attempt-this-online/releases/download/v$VERSION/attempt_this_online.tar.gz" \
-        | tar -xz -C /var/cache/ATO
-fi
+tar -xf "dist/attempt_this_online.tar.gz" -C /var/cache/ATO
 
 cd /var/cache/ATO/attempt_this_online
 
@@ -61,7 +56,7 @@ mkdir -p \
     /usr/local/share/ATO
 
 # configure ATO user
-useradd -rs /usr/bin/nologin -md /var/lib/ATO_home ato
+# useradd -rs /usr/bin/nologin -md /var/lib/ATO_home ato
 
 # install backend
 install -m 500 -o ato -g ato server /usr/local/lib/ATO/
@@ -107,7 +102,7 @@ python -m http.server --directory /var/www/_letsencrypt 80 & PYSERVERPID="$!"
 # TODO get option for email
 certbot certonly -n --webroot -w /var/www/_letsencrypt -d "$1" -d "www.$1" --agree-tos --register-unsafely-without-email
 # end that Python web server
-kill -TERM "$PYSERVERPID"
+# kill -TERM "$PYSERVERPID"
 # configure cronie to automatically renew certificates
 # (every day at 10:07)
 echo "7 10 * * * certbot renew && systemctl reload nginx" >> /var/spool/cron/root

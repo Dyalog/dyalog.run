@@ -213,7 +213,7 @@ function _Run(
       if (loadedLanguage) {
         setLanguage(loadedLanguage as string);
       } else {
-        setLanguageSelectorOpen(true);
+        setLanguage("dyalog_apl");
       }
     } else {
       const loadedLanguage = router.query.L || router.query.l || loadedData.language;
@@ -358,7 +358,7 @@ function _Run(
 
 <pre><code${syntaxHighlightingClass}>${escape(code)}</code></pre>
 
-[Attempt This Online!](${getCurrentURL()})`);
+[Run Dyalog APL!](${getCurrentURL()})`);
 
     notify('Copied to clipboard!');
   };
@@ -394,7 +394,7 @@ function _Run(
         <title>
           {language && languages ? languages[language].name : 'Run'}
           {' '}
-          &ndash; Attempt This Online
+          &ndash; Run Dyalog APL
         </title>
       </Head>
       <div className="min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white relative flex flex-col">
