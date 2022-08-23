@@ -7,7 +7,8 @@ mkdir -p dist/attempt_this_online
 echo Building frontend... >&2
 cd frontend
 # clean up previous build artefacts; otherwise nothing seems to properly update
-rm -rf .next out
+rm -rf .next out node_modules
+npm i
 npm run build
 cd ..
 
