@@ -1,0 +1,204 @@
+#!/usr/bin/env bash
+
+set -e
+
+VERSION="0.1.16"
+
+
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+cd ${SCRIPT_DIR}/..
+PROJROOT=`pwd`
+
+
+error() {
+    echo "$@" >&2; exit 2
+}
+
+# make sure this is ubuntu linux
+[ "$(cat /etc/os-release | awk -F'=' '/^NAME/ {print $2}' | sed 's/"//g')" = "Ubuntu" ] || error this script only works on Ubuntu Linux
+
+
+# make sure a valid domain name was provided (this isn't perfect validation, but it's good enough to check that it's not
+# just garbage)
+echo "$1" | grep -xEq '([0-9A-Za-z\-]+\.)+[0-9A-Za-z]+' || error you must provide a valid domain name as the first command-line argument
+
+whoami | grep -xFq root || error you must run this script as root
+
+# check for apparmor kernel parameter TODO
+# [ -e /sys/kernel/security/apparmor/profiles ] || error you must enable apparmor in the kernel - see 'https://wiki.archlinux.org/index.php/AppArmor'
+
+# install dependencies
+# - bubblewrap: primary sandboxing mechanism
+# - certbot: generate SSL certificates for nginx
+# - cronie: automate renewal of certbot certificates, cache cleaning, etc.
+# - nginx: web server
+# - nginx-mod-modsecurity: web application firewall
+# - python: runtime for API
+# - sed: configuration editing on installation
+# - skopeo: for docker image extraction
+# - sudo: privilege management for sandboxing
+# - zsh: for running the runner scripts
+[ -z "$ATO_NO_DEPS" ] && apt install -y \
+    bubblewrap \
+    certbot \
+    cron \
+    golang-go \
+    npm \
+    nginx \
+    python3 \
+    python-is-python3 \
+    sed \
+    skopeo \
+    sudo \
+    zsh
+
+#    nginx-mod-modsecurity \
+
+./build
+
+# don't use /tmp because it has weird permissions
+mkdir -p /var/cache/ATO
+
+tar -xf "dist/attempt_this_online.tar.gz" -C /var/cache/ATO
+
+cd /var/cache/ATO/attempt_this_online
+
+mkdir -p \
+    /usr/local/lib/ATO \
+    /usr/local/share/ATO
+
+# configure ATO user
+if !  cat /etc/passwd | grep ato ; then
+  useradd -rs /usr/bin/nologin -md /var/lib/ATO_home ato
+fi
+
+# install backend
+install -m 500 -o ato -g ato server /usr/local/lib/ATO/
+
+# install runners
+cp -RT runners /usr/local/share/ATO/runners
+chown -R ato:ato /usr/local/share/ATO/runners
+chmod -R a+rX-w /usr/local/share/ATO/runners
+
+# setup apparmor TODO
+# systemctl enable --now apparmor.service
+
+install -m 500 -o ato -g ato sandbox /usr/local/bin/ATO_sandbox
+install -m 500 -o ato -g ato wrapper /usr/local/bin/ATO_wrapper
+
+# install static files
+cp -RT public /usr/local/share/ATO/public
+for format in woff woff2 ttf; do
+    curl -sSL "https://raw.githubusercontent.com/tonsky/FiraCode/5.2/distr/$format/FiraCode-Regular.$format" -o "/usr/local/share/ATO/public/FiraCode-Regular.$format"
+done
+for format in woff woff2 otf; do
+    for variant in Bold Regular; do
+        curl -sSL "https://github.com/pxeger/Cantarell/raw/v0.301-2/Cantarell$variant.$format" -o "/usr/local/share/ATO/public/Cantarell-$variant.$format"
+    done
+done
+chown -R www-data:www-data /usr/local/share/ATO/public
+chmod -R a+rX-w /usr/local/share/ATO/public
+
+# configure nginx
+sed -i "s/user http;/user www-data;/g" setup/nginx.conf
+sed -i "s/ato.pxeger.com/$1/g" setup/nginx.conf
+install -m 644 -o root -g root setup/nginx.conf /etc/nginx/
+install -m 644 -o root -g root setup/modsecurity.conf /etc/nginx/
+# don't waste time generating DH params unless necessary
+[ -f /etc/nginx/dhparam.pem ] || openssl dhparam -out /etc/nginx/dhparam.pem 2048
+systemctl enable nginx.service
+
+# configure Let's Encrypt
+install -dm 750 -o root -g www-data /var/www/_letsencrypt
+# we can't start nginx because the certificate isn't there, but we can't obtain a certificate if nginx isn't running
+# so start a temporary Python web server
+# TODO(pxeger): work around for letsencrypt issues without needing a temp Python server (certbot standalone mode?)
+python -m http.server --directory /var/www/_letsencrypt 80 & PYSERVERPID="$!"
+# TODO get option for email
+#certbot certonly -n --webroot -w /var/www/_letsencrypt -d "$1" -d "www.$1" --agree-tos --register-unsafely-without-email
+
+
+# end that Python web server
+kill -TERM "$PYSERVERPID"
+# configure cronie to automatically renew certificates
+# (every day at 10:07)
+echo "7 10 * * * certbot renew && systemctl reload nginx" >> /var/spool/cron/root
+systemctl enable --now cron.service
+
+# install yargs
+install -m 555 -o root -g root yargs /usr/local/bin/ATO_yargs
+
+# steal a statically linked bash from Debian
+curl -L https://github.com/attempt-this-online/static-bash/releases/download/v5.1-6/bash > /usr/local/bin/ATO_bash
+chmod 555 /usr/local/bin/ATO_bash
+
+# configure service
+install -m 555 -o root -g root setup/ATO /usr/local/bin/
+mkdir -p /usr/local/lib/systemd/system/
+install -m 644 -o root -g root setup/ATO.service /usr/local/lib/systemd/system/
+systemctl enable ATO.service
+
+# generate flags to be used as proof of compromise
+flag() {
+    # shellcheck disable=SC2018
+    tr < /dev/urandom -dc a-z | head -c 32 > "$1"
+    chown "$2" "$1"
+    chmod 400 "$1"
+}
+flag /root/flag root:root
+flag /var/lib/ATO_home/flag ato:ato
+
+# Create upper layer filesystem for overlayfs which contains the mount point /ATO pre-made for bwrap - see
+# https://github.com/containers/bubblewrap/issues/413
+mkdir -p /usr/local/share/ATO/overlayfs_upper/ATO /usr/local/share/ATO/overlayfs_upper/proc /usr/local/share/ATO/overlayfs_upper/dev
+
+echo Finished system setup.
+echo Now extracting Docker images - this will take a long time...
+
+mkdir -p /usr/local/lib/ATO/env /usr/local/lib/ATO/layers
+mkdir -p /var/cache/ATO/images
+
+[ -z "$ATO_NO_IMAGES" ] && \
+while read -r image
+do
+    # ignore blank lines or comments
+    [ -z "$image" ] || [ "$image" = "#" ] && continue
+    echo "$image"
+
+    skopeo copy docker://"$image" docker-archive:>(tar -xC /var/cache/ATO/images)
+    # shellcheck disable=SC2010
+    ls /var/cache/ATO/images |
+    grep -Ex '[0-9a-f]+\.tar' |
+        while read -r filename
+        do
+            # skip duplicate layers
+            layer_id="${filename%.tar}"
+            [ -d "/usr/local/lib/ATO/layers/$layer_id" ] && continue
+            mkdir "/usr/local/lib/ATO/layers/$layer_id"
+            tar -xf "/var/cache/ATO/images/$layer_id.tar" -C \
+                "/usr/local/lib/ATO/layers/$layer_id"
+        done
+
+    # replace slash with plus so that it can be used as an individual filename
+    image_pathsafe="$(echo "$image" | tr '/' '+')"
+    setup/overlayfs_genfstab "$image_pathsafe" >> /etc/fstab
+
+    # extract environment variables from the image
+    skopeo inspect docker://"$image" | setup/parse_env > "/usr/local/lib/ATO/env/$image_pathsafe"
+
+    rm -rf /var/cache/ATO/images/*
+
+done < images.txt
+
+echo Finished extracting images.
+echo Clearing up...
+
+cd /
+rm -rf /var/cache/ATO
+
+echo Starting up services...
+# mount all overlayfs
+mount -a
+systemctl start nginx.service ATO.service
+
+echo Finished!
