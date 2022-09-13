@@ -1,11 +1,11 @@
 # Dyalog.run
-Dyalog.run is an online sandbox for testing code in a Dyalog APL.
+Dyalog.run is an online sandbox for testing code using Dyalog APL.
 
 This project is forked from [Attempt This Online](https://ato.pxeger.com).
 
-Attempt This Online was originally a clone of [Try It Online!](https://github.com/TryItOnline/tryitonline).
+Attempt This Online was originally a clone of [Try It Online!](https://github.com/TryItOnline/tryitonline)
 
-This repository is used as the code to host dyalog.run, Please refer to [`LICENCE.txt`](./LICENCE.txt) if you wish
+This repository contains he code to host dyalog.run, Please refer to [`LICENCE.txt`](./LICENCE.txt) if you wish
 to use this code in your own project.
 
 
@@ -18,8 +18,8 @@ Dyalog APL is © Copyright Dyalog Ltd and is not part of the GNU Affero General 
 ### Dyalog.run
 © Patrick Reader, Dyalog Ltd.
 
-Attempt This Online / dyalog.run is licensed under the GNU Affero General Public License 3.0 except where
+Dyalog.run is licensed under the GNU Affero General Public License 3.0 except where
 otherwise noted - see the [`LICENCE.txt`](./LICENCE.txt) file for more information.
 
-Note that if you use the official instance at [ato.pxeger.com](https://ato.pxeger.com), you must also abide by the
-[Terms of Use](https://ato.pxeger.com/legal#terms-of-use).
+Note that if you use the instance at [dyalog.run](https://dyalog.run), you must also abide by the
+[Terms of Use](https://dyalog.run/legal#terms-of-use).
