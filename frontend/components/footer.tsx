@@ -5,13 +5,13 @@ export default function Footer({ noLegalLink = false }: { noLegalLink?: boolean 
   return (
     <footer className="px-4 py-2 bg-black bg-opacity-5 dark:bg-opacity-20 w-100 flex flex-col text-center md:flex-row">
       <div className="md:order-1 md:flex md:grow md:justify-center md:w-0">
-        <a href="https://github.com/attempt-this-online/attempt-this-online#licence" className="mr-auto">
+        <a href="https://github.com/attempt-this-online/attempt-this-online#licence">
           ©
           {' '}
           {new Date().getUTCFullYear()}
           {' '}
           Patrick Reader and contributors
-        </a> - <a href="https://www.dyalog.com" className="mr-auto">
+        </a>&nbsp;-&nbsp;<a href="https://www.dyalog.com" className="mr-auto">
          ©
           {' '}
           {new Date().getUTCFullYear()}
