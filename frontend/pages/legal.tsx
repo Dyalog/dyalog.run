@@ -16,7 +16,7 @@ export default function Home() {
             <h1 className="mb-4 text-4xl font-bold">Preamble</h1>
             <aside className="text-justify italic mb-3">
               <a href="https://github.com/Dyalog/dyalog.run/commits/main/frontend/pages/legal.tsx" className="underline text-blue-500">
-                Last Updated: September 9th 2022
+                Last Updated: September 13th 2022
               </a>
             </aside>
             <p className="text-justify mb-3">
