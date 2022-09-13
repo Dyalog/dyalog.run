@@ -33,13 +33,6 @@ html {
   footer::before {
     content: "© 2022 Dyalog Ltd.";
   }
-  /* hide stuff */
-  nav a:first-child, form>div:first-child, fieldset .flex.flex-wrap.mt-3 {
-    display:none
-  }
-  nav h2, footer div, details div {
-    visibility: hidden
-  }
 
 @font-face {
     font-family: Cantarell;
