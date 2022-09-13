@@ -11,11 +11,7 @@ export default function Footer({ noLegalLink = false }: { noLegalLink?: boolean 
           {new Date().getUTCFullYear()}
           {' '}
           Patrick Reader and contributors
-        </a>&nbsp;-&nbsp;<a href="https://www.dyalog.com" className="mr-auto">
-         ©
-          {' '}
-          {new Date().getUTCFullYear()}
-          {' '}
+        </a>,&nbsp;<a href="https://www.dyalog.com" className="mr-auto">
           Dyalog Ltd.
         </a>
       </div>

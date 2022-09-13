@@ -24,7 +24,7 @@ export default function Home() {
               className="underline text-blue-500">fork</a> of <a href="https://ato.pxeger.com/">Attempt This
               Online</a> (<a href="https://github.com/attempt-this-online/attempt-this-online"
               className="underline text-blue-500">GitHub</a>) which is <a href="https://github.com/attempt-this-online/attempt-this-online#licence"
-              className="underline text-blue-500">© 2022 Patrick Reader and contributor</a>. The software is
+              className="underline text-blue-500">© 2022 Patrick Reader and contributors</a>. The software is
               used in accordance with its licence, which is <a href="https://www.gnu.org/licenses/agpl-3.0.en.html"
               className="underline text-blue-500">GNU Affero General Public License 3.0</a>, and is provided without warranty.
               dyalog.run is hosted by <a href="https://www.dyalog.com/" className="underline text-blue-500">Dyalog
