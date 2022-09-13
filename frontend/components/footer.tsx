@@ -11,6 +11,12 @@ export default function Footer({ noLegalLink = false }: { noLegalLink?: boolean 
           {new Date().getUTCFullYear()}
           {' '}
           Patrick Reader and contributors
+        </a> - <a href="https://www.dyalog.com" className="mr-auto">
+         ©
+          {' '}
+          {new Date().getUTCFullYear()}
+          {' '}
+          Dyalog Ltd.
         </a>
       </div>
       <div className="md:order-2 md:flex md:justify-center md:w-0 z-10">
@@ -21,6 +27,15 @@ export default function Footer({ noLegalLink = false }: { noLegalLink?: boolean 
             </a>
           </Link>
         )}
+      </div>
+      <div className="md:order-3 md:flex md:grow md:justify-center md:w-0">
+        <div className="ml-auto truncate">
+          <a href="https://github.com/Dyalog/dyalog.run">
+            Version:
+            {' '}
+            <code>{buildId}</code>
+          </a>
+        </div>
       </div>
     </footer>
   );

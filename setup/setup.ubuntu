@@ -103,7 +103,6 @@ chmod -R a+rX-w /usr/local/share/ATO/public
 sed -i "s/user http;/user www-data;/g" setup/nginx.conf
 sed -i "s/ato.pxeger.com/$1/g" setup/nginx.conf
 install -m 644 -o root -g root setup/nginx.conf /etc/nginx/
-install -m 644 -o root -g root setup/modsecurity.conf /etc/nginx/
 # don't waste time generating DH params unless necessary
 [ -f /etc/nginx/dhparam.pem ] || openssl dhparam -out /etc/nginx/dhparam.pem 2048
 systemctl enable nginx.service

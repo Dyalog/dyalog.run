@@ -26,13 +26,6 @@ html {
   .dark .dark\:hover\:bg-gray-700:hover, .rounded-full:hover {
     background-color: #636366 !important;
   }
-  nav h2::before {
-    content: "Run Dyalog APL";
-    visibility: visible;
-  }
-  footer::before {
-    content: "© 2022 Dyalog Ltd.";
-  }
 
 @font-face {
     font-family: Cantarell;
