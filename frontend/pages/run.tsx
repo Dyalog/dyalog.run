@@ -428,13 +428,6 @@ function _Run(
                     </span>
                     {languages && language && <a className="mx-2 text-blue-500 underline" href={languages[language].url}>{languages[language].name}</a>}
                   </span>
-                  <button
-                    type="button"
-                    onClick={() => { setLanguageSelectorOpen(true); }}
-                    className="ml-1 rounded px-2 py-1 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring hover:bg-gray-300 transition"
-                  >
-                    Change
-                  </button>
                 </div>
                 <div className="flex grow justify-between relative">
                   <code className="my-auto mr-4 font-mono bg-gray-200 dark:bg-gray-800 px-2 py-px rounded">
