@@ -22,15 +22,6 @@ export default function Footer({ noLegalLink = false }: { noLegalLink?: boolean 
           </Link>
         )}
       </div>
-      <div className="md:order-3 md:flex md:grow md:justify-center md:w-0">
-        <div className="ml-auto truncate">
-          <a href="https://github.com/attempt-this-online/attempt-this-online">
-            Version:
-            {' '}
-            <code>{buildId}</code>
-          </a>
-        </div>
-      </div>
     </footer>
   );
 }
